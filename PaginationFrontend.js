@@ -1,0 +1,100 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const RickMortyFrontend = () => {
+  const [episodes, setEpisodes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedEpisode, setSelectedEpisode] = useState(null);
+  const [charactersInEpisode, setCharactersInEpisode] = useState([]);
+
+  useEffect(() => {
+    // Fetch all episodes on component mount
+    getAllEpisodes();
+  }, []);
+
+  const getAllEpisodes = async () => {
+    try {
+      const response = await axios.get('https://localhost:7254/api/Pagination/all');
+      setEpisodes(response.data);
+    } catch (error) {
+      console.error('Error fetching episodes:', error);
+    }
+  };
+
+  const searchEpisodes = async () => {
+    try {
+      const response = await axios.get(`https://localhost:7254/api/Pagination/search?search=${searchTerm}`);
+      setEpisodes(response.data);
+    } catch (error) {
+      console.error('Error searching episodes:', error);
+    }
+  };
+
+  const getEpisodeDetails = async (episodeId) => {
+    try {
+      const response = await axios.get(`https://localhost:7254/api/Pagination/${episodeId}/details`);
+      setSelectedEpisode(response.data);
+
+      // Fetch characters for the selected episode
+      getCharactersInEpisode(episodeId);
+    } catch (error) {
+      console.error(`Error fetching details for episode ${episodeId}:`, error);
+    }
+  };
+
+  const getCharactersInEpisode = async (episodeId) => {
+    try {
+      const response = await axios.get(`https://localhost:7254/api/Pagination/${episodeId}/characters`);
+      setCharactersInEpisode(response.data);
+    } catch (error) {
+      console.error(`Error fetching characters for episode ${episodeId}:`, error);
+    }
+  };
+
+  const showCharacterDetails = (character) => {
+    // Display character details on the page
+    alert(
+      `Character Details:\nName: ${character.name}\nGender: ${character.gender}\nSpecies: ${character.species}\nStatus: ${character.status}`
+    );
+  };
+
+  return (
+    <div>
+      <h1>Rick and Morty Episodes</h1>
+      <input
+        type="text"
+        placeholder="Search episodes"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <button onClick={searchEpisodes}>Search</button>
+
+      <ul>
+        {episodes.map((episode) => (
+          <li key={episode.id}>
+            {episode.name} - <button onClick={() => getEpisodeDetails(episode.id)}>Details</button>
+          </li>
+        ))}
+      </ul>
+
+      {selectedEpisode && (
+        <div>
+          <h2>{selectedEpisode.name}</h2>
+          <p>Air Date: {selectedEpisode.air_date}</p>
+          <p>Episode: {selectedEpisode.episode}</p>
+
+          <h3>Characters in this Episode</h3>
+          <ul>
+            {charactersInEpisode.map((character) => (
+              <li key={character.id}>
+                {character.name} - <button onClick={() => showCharacterDetails(character)}>Details</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default RickMortyFrontend;
