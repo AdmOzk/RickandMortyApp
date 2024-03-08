@@ -1,2 +1,3 @@
 React bilgi kısıtlığı ve kişisel olarak bir yoğunluk döneminden dolayı projeyi tam olarak tamamlayamasam da web servis tarafında istenilen maddelerin çoğu yerine getirilmiştir. 
-React tarafında listelemeler ve istekler çalışmaktadır. Veritabanı Bağlantısı Kurulmuştur.
+React tarafında listelemeler ve istekler çalışmaktadır. Veritabanı Bağlantısı Kurulmuştur. React ana sayfası "ReactMainPage" dosyasından doğru haline ulaşılabilir. 
+Zaman yönetiminde ki hata ve backend odaklı geliştirme sebebi ile tüm frontend dosyaları yüklenememiştir.
